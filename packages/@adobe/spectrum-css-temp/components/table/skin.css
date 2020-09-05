@@ -1,0 +1,298 @@
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+.spectrum-Table-headWrapper {
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+
+.spectrum-Table-headCell {
+  color: var(--spectrum-table-header-text-color);
+  background-color: var(--spectrum-alias-background-color-default);
+
+  &.is-sortable {
+    .spectrum-Table-sortedIcon {
+      color: var(--spectrum-table-header-sort-icon-color);
+    }
+
+    &.is-hovered {
+      color: var(--spectrum-table-header-text-color-hover);
+
+      .spectrum-Table-sortedIcon {
+        color: var(--spectrum-table-header-sort-icon-color-hover);
+      }
+    }
+
+    &:focus-ring,
+    &.is-focused {
+      color: var(--spectrum-table-header-text-color-key-focus);
+
+      .spectrum-Table-sortedIcon {
+        color: var(--spectrum-table-header-sort-icon-color-key-focus);
+      }
+    }
+
+    &:active {
+      color: var(--spectrum-table-header-text-color-down);
+
+      .spectrum-Table-sortedIcon {
+        color: var(--spectrum-table-header-sort-icon-color-down);
+      }
+    }
+  }
+
+  &.is-resizable {
+    &.is-hovered {
+      color: var(--spectrum-table-header-text-color-hover);
+    }
+  }
+}
+
+/* Helper for shared drop target overlay */
+%drop-target {
+  border-color: var(--spectrum-alias-border-color-focus);
+  box-shadow: 0 0 0 1px var(--spectrum-alias-border-color-focus);
+
+  &::before {
+    background-color: var(--spectrum-alias-highlight-selected);
+  }
+}
+
+.spectrum-Table-cell,
+.spectrum-Table-headCell {
+  &:focus-ring,
+  &.is-focused {
+    &::before {
+      box-shadow: inset 0 0 0 2px var(--spectrum-table-cell-border-color-key-focus);
+    }
+  }
+}
+
+.spectrum-Table-body {
+  border-style: solid;
+  border-color: var(--spectrum-table-border-color);
+  background-color: var(--spectrum-table-background-color);
+
+  &.is-drop-target {
+    border-color: var(--spectrum-alias-border-color-focus);
+    box-shadow: 0 0 0 1px var(--spectrum-alias-border-color-focus);
+
+    &::before {
+      background-color: var(--spectrum-alias-highlight-selected);
+    }
+  }
+}
+
+/* The tbody tag doesn't allow setting a border-radius, so these hacks are to make that work
+   by putting the border on the individual cells instead. */
+tbody.spectrum-Table-body {
+  border: none;
+
+  .spectrum-Table-row {
+    border-top: none;
+  }
+
+  .spectrum-Table-cell {
+    border-top: 1px solid var(--spectrum-table-cell-border-color);
+  }
+
+  .spectrum-Table-row .spectrum-Table-cell:first-child {
+    border-left: 1px solid var(--spectrum-table-cell-border-color);
+  }
+
+  .spectrum-Table-row .spectrum-Table-cell:last-child {
+    border-right: 1px solid var(--spectrum-table-cell-border-color);
+  }
+
+  .spectrum-Table-row:last-child .spectrum-Table-cell {
+    border-bottom: 1px solid var(--spectrum-table-cell-border-color);
+  }
+}
+
+.spectrum-Table-row {
+  box-sizing: border-box;
+
+  .spectrum-Table-cellWrapper {
+    /* Add an opaque background so that the transparent background
+     * on the cell doesn't allow other cells to show through sticky cells. */
+    background-color: var(--spectrum-table-background-color);
+  }
+
+  /* We apply background color to the cell rather than the row so that
+   * cells can overlap (e.g. sticky row headers). */
+  &.is-hovered .spectrum-Table-cell {
+    background-color: var(--spectrum-table-row-background-color-hover);
+  }
+
+  &:focus-ring .spectrum-Table-cell,
+  &.is-focused .spectrum-Table-cell {
+    background-color: var(--spectrum-table-row-background-color-hover);
+  }
+
+  &:focus-ring {
+    &:before {
+      background: var(--spectrum-selectlist-option-focus-indicator-color);
+    }
+  }
+
+  &.is-active .spectrum-Table-cell:not(.is-disabled) {
+    background-color: var(--spectrum-table-row-background-color-down);
+  }
+
+  /* Alternative to border on rows. Using box shadow since they don't take room unlike border which would cause wiggles
+   * in the highlight case and displace the sticky indicator. Also allows for a nicer bottom curved border to match the container,
+   * the bottom border curved corners were cut off when using borders.
+   */
+
+  /* Box shadow for bottom border for non-selected rows that aren't immediately above a selected row. Can't omit the bottom border for last row unlike listview
+   * due to how table rows always reserve 1px for the bottom border (results in a white gap on hover otherwise).
+   */
+  &:after {
+    box-shadow: inset 0 -1px 0 0 var(--spectrum-table-cell-border-color);
+    content: '';
+    display: block;
+    position: absolute;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    inset-block-end: 0;
+    inset-block-start: 0;
+    z-index: 3;
+    pointer-events: none;
+  }
+
+  /* Box shadow for bottom border for non-selected row that is immediately above a selected row. */
+  &.is-next-selected {
+    &:after {
+      box-shadow: inset 0 -1px 0 0 var(--spectrum-global-color-blue-500);
+    }
+  }
+
+  &.is-selected {
+    .spectrum-Table-cell {
+      background-color: var(--spectrum-table-row-background-color-selected);
+    }
+
+    &.is-hovered .spectrum-Table-cell,
+    &.is-active .spectrum-Table-cell:not(.is-disabled) {
+      background-color: var(--spectrum-table-row-background-color-selected-hover);
+    }
+
+    &:focus-ring .spectrum-Table-cell,
+    &.is-focused .spectrum-Table-cell {
+      background-color: var(--spectrum-table-row-background-color-selected-key-focus);
+    }
+
+    /* Box shadow for bottom, left, and right border for selected rows. */
+    &:after {
+      box-shadow: inset 1px 0 0 0 var(--spectrum-global-color-blue-500), inset -1px 0 0 0 var(--spectrum-global-color-blue-500), inset 0 -1px 0 0 var(--spectrum-global-color-blue-500);
+    }
+  }
+
+  /* Box shadow for bottom, left, right, and top border for first row when selected. When the row isn't selected, it doesn't need
+   * a top border.
+   */
+   &.spectrum-Table-row--firstRow {
+    &.is-selected {
+      &:after {
+        box-shadow: inset 1px 0 0 0 var(--spectrum-global-color-blue-500), inset -1px 0 0 0 var(--spectrum-global-color-blue-500), inset 0 1px 0 0 var(--spectrum-global-color-blue-500), inset 0 -1px 0 0 var(--spectrum-global-color-blue-500);
+      }
+    }
+  }
+
+  &.is-drop-target {
+    &::before {
+      box-shadow: inset 0 0 0 2px var(--spectrum-alias-border-color-focus);
+      background-color: var(--spectrum-alias-highlight-selected);
+    }
+  }
+}
+
+.spectrum-Table-cell {
+  color: var(--spectrum-table-cell-text-color);
+  background-color: var(--spectrum-table-cell-background-color);
+}
+
+.spectrum-Table-cell--divider {
+  border-inline-end-style: solid;
+  border-inline-end-color: var(--spectrum-table-divider-border-color);
+}
+
+.spectrum-Table--quiet {
+  .spectrum-Table-body {
+    border-width: 1px 0;
+    background-color: var(--spectrum-table-quiet-cell-background-color);
+
+    &.is-drop-target {
+      box-shadow: none;
+      border-color: transparent;
+
+      &::before {
+        box-shadow: inset 0 0 0 2px var(--spectrum-alias-border-color-focus);
+      }
+    }
+  }
+
+  .spectrum-Table-row {
+    .spectrum-Table-cellWrapper {
+      background-color: var(--spectrum-alias-background-color-default);
+    }
+
+    &.is-hovered .spectrum-Table-cell {
+      background-color: var(--spectrum-table-quiet-row-background-color-hover);
+    }
+
+    &:focus-ring .spectrum-Table-cell,
+    &.is-focused .spectrum-Table-cell {
+      background-color: var(--spectrum-table-quiet-row-background-color-hover);
+    }
+
+    &.is-active .spectrum-Table-cell:not(.is-disabled) {
+      background-color: var(--spectrum-table-quiet-row-background-color-down);
+    }
+
+    &.is-selected {
+      .spectrum-Table-cell {
+        background-color: var(--spectrum-table-quiet-row-background-color-selected);
+      }
+
+      &.is-hovered .spectrum-Table-cell {
+        background-color: var(--spectrum-table-quiet-row-background-color-selected-hover);
+      }
+
+      &:focus-ring .spectrum-Table-cell,
+      &.is-focused .spectrum-Table-cell {
+        background-color: var(--spectrum-table-quiet-row-background-color-selected-key-focus);
+      }
+    }
+  }
+
+  tbody.spectrum-Table-body {
+    .spectrum-Table-row .spectrum-Table-cell:first-child,
+    .spectrum-Table-row .spectrum-Table-cell:last-child {
+      border-left: none;
+      border-right: none;
+    }
+  }
+}
+
+.spectrum-Table-columnResizer {
+  &::after {
+    background-color: var(--spectrum-table-divider-border-color);
+  }
+
+  &:active,
+  &:focus {
+    &::after {
+      background-color: var(--spectrum-global-color-blue-400);
+    }
+  }
+}

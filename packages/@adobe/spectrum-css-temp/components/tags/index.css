@@ -1,0 +1,80 @@
+/*
+Copyright 2019 Adobe. All rights reserved.
+This file is licensed to you under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License. You may obtain a copy
+of the License at http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under
+the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR REPRESENTATIONS
+OF ANY KIND, either express or implied. See the License for the specific language
+governing permissions and limitations under the License.
+*/
+
+@import '../commons/index.css';
+
+.spectrum-Tags {
+  display: inline-flex;
+  flex-wrap: wrap;
+
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.spectrum-Tags-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "icon content action";
+  align-items: center;
+  box-sizing: border-box;
+
+  margin: calc(var(--spectrum-taggroup-tag-gap-y) / 2) calc(var(--spectrum-taggroup-tag-gap-x) / 2);
+  padding-inline-start:calc(var(--spectrum-tag-padding-x) - var(--spectrum-tag-border-size));
+  block-size: var(--spectrum-tag-height);
+  max-inline-size: 100%;
+
+  border-width: var(--spectrum-tag-border-size);
+  border-style: solid;
+  border-radius: var(--spectrum-border-radius);
+  outline: none;
+  user-select: none;
+
+  transition: border-color var(--spectrum-global-animation-duration-100) ease-in-out,
+    color var(--spectrum-global-animation-duration-100) ease-in-out,
+    box-shadow var(--spectrum-global-animation-duration-100) ease-in-out,
+    background-color var(--spectrum-global-animation-duration-100) ease-in-out;
+
+  &.is-disabled {
+    pointer-events: none;
+  }
+}
+
+.spectrum-Tag-icon {
+  grid-area: icon;
+  margin-inline-end: var(--spectrum-global-dimension-size-100);
+}
+
+.spectrum-Tag-content {
+  grid-area: content;
+  block-size: 100%;
+  line-height: calc(var(--spectrum-tag-height) - calc(var(--spectrum-tag-border-size) * 2));
+  margin-inline-end: var(--spectrum-tag-padding-x);
+  flex: 1 1 auto;
+  font-size: var(--spectrum-tag-text-size);
+  cursor: default;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  outline: none;
+}
+
+.tags-removable {
+  margin-inline-end: 0;
+}
+
+.spectrum-Tag-action {
+  grid-area: action;
+  height: calc(var(--spectrum-tag-height) - (2 * var(--spectrum-tag-border-size)));
+  width: var(--spectrum-global-dimension-size-300);
+}
+
